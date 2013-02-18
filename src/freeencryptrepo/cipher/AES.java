@@ -1,4 +1,4 @@
-package freeencryptrepo;
+package freeencryptrepo.cipher;
 
 import java.security.GeneralSecurityException;
 import java.security.MessageDigest;

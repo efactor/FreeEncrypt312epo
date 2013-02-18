@@ -1,4 +1,4 @@
-package freeencryptrepo;
+package freeencryptrepo.cipher;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -12,24 +12,26 @@ import java.security.GeneralSecurityException;
 import java.util.Vector;
 
 public class FileEncrypter {
+	private Vector<String> salts = new Vector<String>();
+	private Vector<String> source_filenames = new Vector<String>();
 	
 	public boolean encryptFilesinFolder(String key, String folderpath)
 	{
-		File directoryPath = new File(folderpath);
-		File encryptedFolderPath = new File(directoryPath.getParent()+"\\"+directoryPath.getName()+"FER");
-		if(!encryptedFolderPath.exists())
+		File directory = new File(folderpath);
+		File encryptedFolder = new File(directory.getParent()+"\\"+directory.getName()+"FER");
+		if(!encryptedFolder.exists())
 		{
-			if(!encryptedFolderPath.mkdir())
+			if(!encryptedFolder.mkdir())
 				// if the destination path is unable to be created, then don't worry about encrypting the files when there is no place to put them
 				return false;
 		}
-		Vector<String> salts = new Vector<String>();
-		Vector<String> source_filenames = new Vector<String>();
-
+		// move all the source files to the FER directory
+		new FileRelocator().moveAllFiles(directory.getAbsolutePath(), encryptedFolder.getAbsolutePath());
+		EncryptDirectory(folderpath, encryptedFolder.getAbsolutePath(), key);
 		return true;
 	}
 	
-	public String encryptFileName(String _key, String salt, File f)
+	protected String encryptFileName(String _key, String salt, File f)
 	{
 		try {
 			return new AES().Encrypt(_key, salt, f.getName());
@@ -38,7 +40,7 @@ public class FileEncrypter {
 		}
 		return "";
 	}
-	public String encryptFileContents(String _key, String salt, File f)
+	protected String encryptFileContents(String _key, String salt, File f)
 	{
 		try {
 			return new AES().Encrypt(_key, salt, FReader(f));
@@ -48,18 +50,22 @@ public class FileEncrypter {
 		return "";
 	}
 	
-	public void EncryptDirectory(String directoryPath, String encryptedFolderPath, String key)
+	protected void EncryptDirectory(String directoryPath, String encryptedFolderPath, String key)
 	{
 		File dir = new File(directoryPath);
 		if(dir.isFile())
 			return;
 		for(String filename : dir.list())
 		{
+			
 			File current = new File(dir.getAbsolutePath()+filename);
 			if(current.isFile())
 			{			
+				String salt = genPRSalt(10);
+				salts.add(salt);
+				source_filenames.add(current.getName());
 				//encrypt the contents and create a file with the encrypted contents
-				FWriter(new File(encryptedFolderPath+"\\"+genPRSalt(10)), encryptFileContents(key, genPRSalt(10), current));
+				FWriter(new File(encryptedFolderPath+"\\"+encryptFileName(key, salt, current)), encryptFileContents(key, genPRSalt(10), current));
 			}
 			else
 			{
@@ -69,7 +75,10 @@ public class FileEncrypter {
 		}
 	}
 	
-	public String genPRSalt(int length)
+	public Vector<String> getSalts() {	return salts;  }
+	public Vector<String> getSourceFilenames() {	return source_filenames;  }
+	
+	protected String genPRSalt(int length)
 	{
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < length; i++)
@@ -80,7 +89,7 @@ public class FileEncrypter {
 		return sb.toString();
 	}
 	
-	/* @param File f - the file where the contents will be written
+	/* @param 	File f - the file where the contents will be written
 	 * 			String contents - the contents of the file being written
 	 * 
 	 * @returns true or false based on whether the file was written or not
