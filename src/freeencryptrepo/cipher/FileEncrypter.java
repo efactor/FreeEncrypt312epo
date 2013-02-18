@@ -12,8 +12,15 @@ import java.security.GeneralSecurityException;
 import java.util.Vector;
 
 public class FileEncrypter {
-	private Vector<String> salts = new Vector<String>();
-	private Vector<String> source_filenames = new Vector<String>();
+	private Vector<String> salts, source_filenames;
+	
+	public FileEncrypter()
+	{
+		salts = new Vector<String>();
+		source_filenames = new Vector<String>();
+	}
+	public Vector<String> getSalts() {	return salts;  }
+	public Vector<String> getSourceFilenames() {	return source_filenames;  }
 	
 	public boolean encryptFilesinFolder(String key, String folderpath)
 	{
@@ -65,7 +72,8 @@ public class FileEncrypter {
 				salts.add(salt);
 				source_filenames.add(current.getName());
 				//encrypt the contents and create a file with the encrypted contents
-				FWriter(new File(encryptedFolderPath+"\\"+encryptFileName(key, salt, current)), encryptFileContents(key, genPRSalt(10), current));
+				FWriter(new File(encryptedFolderPath+"\\"+encryptFileName(key, salt, current)), encryptFileContents(key, salt, current));
+				System.out.println();
 			}
 			else
 			{
@@ -74,10 +82,6 @@ public class FileEncrypter {
 	
 		}
 	}
-	
-	public Vector<String> getSalts() {	return salts;  }
-	public Vector<String> getSourceFilenames() {	return source_filenames;  }
-	
 	protected String genPRSalt(int length)
 	{
 		StringBuffer sb = new StringBuffer();
