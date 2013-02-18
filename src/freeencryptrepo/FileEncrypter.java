@@ -25,20 +25,7 @@ public class FileEncrypter {
 		}
 		Vector<String> salts = new Vector<String>();
 		Vector<String> source_filenames = new Vector<String>();
-		for(String filename : directoryPath.list())
-		{
-			File current = new File(directoryPath.getAbsolutePath()+filename);
-			if(current.isFile())
-			{			
-				//encrypt the contents and create a file with the encrypted contents
-				FWriter(new File(encryptedFolderPath+"\\"+genPRSalt(10)), encryptFileContents(key, genPRSalt(10), current));
-			}
-			else
-			{
-				
-			}
 
-		}
 		return true;
 	}
 	
@@ -59,6 +46,27 @@ public class FileEncrypter {
 			e.printStackTrace();
 		}
 		return "";
+	}
+	
+	public void EncryptDirectory(String directoryPath, String encryptedFolderPath, String key)
+	{
+		File dir = new File(directoryPath);
+		if(dir.isFile())
+			return;
+		for(String filename : dir.list())
+		{
+			File current = new File(dir.getAbsolutePath()+filename);
+			if(current.isFile())
+			{			
+				//encrypt the contents and create a file with the encrypted contents
+				FWriter(new File(encryptedFolderPath+"\\"+genPRSalt(10)), encryptFileContents(key, genPRSalt(10), current));
+			}
+			else
+			{
+				EncryptDirectory(current.getAbsolutePath(), encryptedFolderPath, key);
+			}
+	
+		}
 	}
 	
 	public String genPRSalt(int length)

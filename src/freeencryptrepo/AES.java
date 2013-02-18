@@ -7,7 +7,7 @@ import javax.crypto.spec.SecretKeySpec;
 
 
 public class AES{
- 
+
 	public String Encrypt(String _key, String salt, String message) throws GeneralSecurityException 
 	{
 	  Cipher cipher = Cipher.getInstance("AES");
