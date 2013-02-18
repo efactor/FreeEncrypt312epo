@@ -23,7 +23,7 @@ public class FileRelocator {
 			{
 				moveAllFiles(source.getAbsolutePath(), dest.getAbsolutePath());
 			}
-			new UI().toUser(String.valueOf(source.renameTo(dest)));
+			new UI().toUser("Moving " + source + " " + String.valueOf(source.renameTo(dest)));
 		}
 	}
 	

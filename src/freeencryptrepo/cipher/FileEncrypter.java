@@ -58,7 +58,7 @@ public class FileEncrypter {
 		for(String filename : dir.list())
 		{
 			
-			File current = new File(dir.getAbsolutePath()+filename);
+			File current = new File(dir.getAbsolutePath()+"\\"+filename);
 			if(current.isFile())
 			{			
 				String salt = genPRSalt(10);
@@ -83,7 +83,7 @@ public class FileEncrypter {
 		StringBuffer sb = new StringBuffer();
 		for(int i = 0; i < length; i++)
 		{
-			int rand = (int) Math.random()*254+1;
+			int rand = (int) (Math.random()*254+1);
 			sb.append((char)rand);
 		}
 		return sb.toString();
