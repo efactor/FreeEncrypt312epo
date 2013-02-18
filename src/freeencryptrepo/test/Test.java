@@ -30,13 +30,14 @@ public class Test {
 	StringBuffer salts = new StringBuffer();
 	for(String s : fe.getSalts())
 	{
-		salts = salts.append(s+"\n");
+		System.out.println(fe.salts.size());
+		salts.append(s+"\n");
 	}
 	fe.FWriter(new File(repo+"\\"+"salts.txt"), salts.toString());
 	StringBuffer source_filenames = new StringBuffer();
 	for(String s : fe.getSourceFilenames())
 	{
-		source_filenames = source_filenames.append(s+"\n");
+		source_filenames.append(s+"\n");
 	}
 	fe.FWriter(new File(repo+"\\"+"source_filenames.txt"), source_filenames.toString());
 	new FileRelocator().removeAllEncryptedFiles(repo);

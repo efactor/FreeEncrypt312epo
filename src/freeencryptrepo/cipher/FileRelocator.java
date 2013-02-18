@@ -37,7 +37,7 @@ public class FileRelocator {
 		}
 		for(String s : f.list())
 			{
-				File del = new File(s);
+				File del = new File(path + "\\" + s);
 				if(del.isFile())
 				{
 					new UI().toUser("Deleting "+ del.getAbsolutePath() + "|(result):"+del.delete());

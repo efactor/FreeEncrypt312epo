@@ -12,7 +12,7 @@ import java.security.GeneralSecurityException;
 import java.util.Vector;
 
 public class FileEncrypter {
-	private Vector<String> salts, source_filenames;
+	public Vector<String> salts, source_filenames;
 	
 	public FileEncrypter()
 	{
@@ -73,7 +73,7 @@ public class FileEncrypter {
 				source_filenames.add(current.getName());
 				//encrypt the contents and create a file with the encrypted contents
 				FWriter(new File(encryptedFolderPath+"\\"+encryptFileName(key, salt, current)), encryptFileContents(key, salt, current));
-				System.out.println();
+				System.out.println(salts.lastElement());
 			}
 			else
 			{
